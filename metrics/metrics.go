@@ -323,7 +323,10 @@ func AUC(scores []float64, outcomes []int) float64 {
 		return 0
 	}
 	// Sort by score ascending and count positives
-	type pair struct{ s float64; o int }
+	type pair struct {
+		s float64
+		o int
+	}
 	pairs := make([]pair, len(scores))
 	for i := range scores {
 		pairs[i] = pair{scores[i], outcomes[i]}
@@ -380,6 +383,23 @@ func CalibrationError(scores []float64, outcomes []int) float64 {
 	return sum / float64(len(scores))
 }
 
+// kappaWeight computes linear weight 1 - |p-r|/4
+func kappaWeight(p, r int) float64 {
+	w := 1 - math.Abs(float64(p-r))/4
+	if w < 0 {
+		return 0
+	}
+	return w
+}
+
+// clampLevel ensures level is 1..5, defaulting to 3
+func clampLevel(L int) int {
+	if L < 1 || L > 5 {
+		return 3
+	}
+	return L
+}
+
 // WeightedKappa returns linear weighted kappa with unit weights for adjacent
 // level difference. pred and ref are level 1..5; equal length.
 func WeightedKappa(pred, ref []int) float64 {
@@ -389,18 +409,8 @@ func WeightedKappa(pred, ref []int) float64 {
 	n := float64(len(pred))
 	var obsWeight, expWeight float64
 	for i := range pred {
-		p, r := pred[i], ref[i]
-		if p < 1 || p > 5 {
-			p = 3
-		}
-		if r < 1 || r > 5 {
-			r = 3
-		}
-		w := 1 - math.Abs(float64(p-r))/4
-		if w < 0 {
-			w = 0
-		}
-		obsWeight += w
+		p, r := clampLevel(pred[i]), clampLevel(ref[i])
+		obsWeight += kappaWeight(p, r)
 	}
 	obsWeight /= n
 	countP, countR := [6]float64{}, [6]float64{}
@@ -415,11 +425,7 @@ func WeightedKappa(pred, ref []int) float64 {
 	}
 	for i := 1; i <= 5; i++ {
 		for j := 1; j <= 5; j++ {
-			w := 1 - math.Abs(float64(i-j))/4
-			if w < 0 {
-				w = 0
-			}
-			expWeight += (countP[i] / n) * (countR[j] / n) * w
+			expWeight += (countP[i] / n) * (countR[j] / n) * kappaWeight(i, j)
 		}
 	}
 	if expWeight >= 1 {

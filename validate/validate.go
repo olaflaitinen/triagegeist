@@ -50,158 +50,93 @@ const (
 
 // Bounds for each vital (min, max). 0 for a vital means "missing" and is allowed.
 var (
-	HRBounds  = [2]int{20, 300}
-	RRBounds  = [2]int{0, 60}
-	SBPBounds = [2]int{40, 300}
-	DBPBounds = [2]int{20, 200}
+	HRBounds   = [2]int{20, 300}
+	RRBounds   = [2]int{0, 60}
+	SBPBounds  = [2]int{40, 300}
+	DBPBounds  = [2]int{20, 200}
 	SpO2Bounds = [2]int{0, 100}
-	GCSBounds = [2]int{3, 15}
+	GCSBounds  = [2]int{3, 15}
 )
 
 var (
 	TempBounds = [2]float64{30, 45}
 )
 
+func checkBound(v int, bounds [2]int, rStatus *string, rValid *bool) {
+	if v != 0 {
+		if v < bounds[0] || v > bounds[1] {
+			*rStatus = StatusInvalid
+			*rValid = false
+		} else {
+			*rStatus = StatusOK
+		}
+	} else {
+		*rStatus = StatusMissing
+	}
+}
+
+func checkBoundFloat(v float64, bounds [2]float64, rStatus *string, rValid *bool) {
+	if v != 0 {
+		if v < bounds[0] || v > bounds[1] {
+			*rStatus = StatusInvalid
+			*rValid = false
+		} else {
+			*rStatus = StatusOK
+		}
+	} else {
+		*rStatus = StatusMissing
+	}
+}
+
 // Vitals checks v against bounds and returns a report. It does not modify v.
 func Vitals(v score.Vitals) VitalsReport {
-	var r VitalsReport
-	r.Valid = true
-	r.Clamped = v
-
-	if v.HR != 0 {
-		if v.HR < HRBounds[0] || v.HR > HRBounds[1] {
-			r.HR = StatusInvalid
-			r.Valid = false
-		} else {
-			r.HR = StatusOK
-		}
-	} else {
-		r.HR = StatusMissing
-	}
-
-	if v.RR != 0 {
-		if v.RR < RRBounds[0] || v.RR > RRBounds[1] {
-			r.RR = StatusInvalid
-			r.Valid = false
-		} else {
-			r.RR = StatusOK
-		}
-	} else {
-		r.RR = StatusMissing
-	}
-
-	if v.SBP != 0 {
-		if v.SBP < SBPBounds[0] || v.SBP > SBPBounds[1] {
-			r.SBP = StatusInvalid
-			r.Valid = false
-		} else {
-			r.SBP = StatusOK
-		}
-	} else {
-		r.SBP = StatusMissing
-	}
-
-	if v.DBP != 0 {
-		if v.DBP < DBPBounds[0] || v.DBP > DBPBounds[1] {
-			r.DBP = StatusInvalid
-			r.Valid = false
-		} else {
-			r.DBP = StatusOK
-		}
-	} else {
-		r.DBP = StatusMissing
-	}
-
-	if v.Temp != 0 {
-		if v.Temp < TempBounds[0] || v.Temp > TempBounds[1] {
-			r.Temp = StatusInvalid
-			r.Valid = false
-		} else {
-			r.Temp = StatusOK
-		}
-	} else {
-		r.Temp = StatusMissing
-	}
-
-	if v.SpO2 != 0 {
-		if v.SpO2 < SpO2Bounds[0] || v.SpO2 > SpO2Bounds[1] {
-			r.SpO2 = StatusInvalid
-			r.Valid = false
-		} else {
-			r.SpO2 = StatusOK
-		}
-	} else {
-		r.SpO2 = StatusMissing
-	}
-
-	if v.GCS != 0 {
-		if v.GCS < GCSBounds[0] || v.GCS > GCSBounds[1] {
-			r.GCS = StatusInvalid
-			r.Valid = false
-		} else {
-			r.GCS = StatusOK
-		}
-	} else {
-		r.GCS = StatusMissing
-	}
-
+	r := VitalsReport{Valid: true, Clamped: v}
+	checkBound(v.HR, HRBounds, &r.HR, &r.Valid)
+	checkBound(v.RR, RRBounds, &r.RR, &r.Valid)
+	checkBound(v.SBP, SBPBounds, &r.SBP, &r.Valid)
+	checkBound(v.DBP, DBPBounds, &r.DBP, &r.Valid)
+	checkBoundFloat(v.Temp, TempBounds, &r.Temp, &r.Valid)
+	checkBound(v.SpO2, SpO2Bounds, &r.SpO2, &r.Valid)
+	checkBound(v.GCS, GCSBounds, &r.GCS, &r.Valid)
 	return r
+}
+
+func clampInt(v int, bounds [2]int) int {
+	if v != 0 {
+		if v < bounds[0] {
+			return bounds[0]
+		}
+		if v > bounds[1] {
+			return bounds[1]
+		}
+	}
+	return v
+}
+
+func clampFloat(v float64, bounds [2]float64) float64 {
+	if v != 0 {
+		if v < bounds[0] {
+			return bounds[0]
+		}
+		if v > bounds[1] {
+			return bounds[1]
+		}
+	}
+	return v
 }
 
 // ClampVitals returns a copy of v with all present vitals clamped to bounds.
 // Missing (0) values are left as 0.
 func ClampVitals(v score.Vitals) score.Vitals {
-	out := v
-	if v.HR != 0 {
-		if v.HR < HRBounds[0] {
-			out.HR = HRBounds[0]
-		} else if v.HR > HRBounds[1] {
-			out.HR = HRBounds[1]
-		}
+	return score.Vitals{
+		HR:   clampInt(v.HR, HRBounds),
+		RR:   clampInt(v.RR, RRBounds),
+		SBP:  clampInt(v.SBP, SBPBounds),
+		DBP:  clampInt(v.DBP, DBPBounds),
+		Temp: clampFloat(v.Temp, TempBounds),
+		SpO2: clampInt(v.SpO2, SpO2Bounds),
+		GCS:  clampInt(v.GCS, GCSBounds),
 	}
-	if v.RR != 0 {
-		if v.RR < RRBounds[0] {
-			out.RR = RRBounds[0]
-		} else if v.RR > RRBounds[1] {
-			out.RR = RRBounds[1]
-		}
-	}
-	if v.SBP != 0 {
-		if v.SBP < SBPBounds[0] {
-			out.SBP = SBPBounds[0]
-		} else if v.SBP > SBPBounds[1] {
-			out.SBP = SBPBounds[1]
-		}
-	}
-	if v.DBP != 0 {
-		if v.DBP < DBPBounds[0] {
-			out.DBP = DBPBounds[0]
-		} else if v.DBP > DBPBounds[1] {
-			out.DBP = DBPBounds[1]
-		}
-	}
-	if v.Temp != 0 {
-		if v.Temp < TempBounds[0] {
-			out.Temp = TempBounds[0]
-		} else if v.Temp > TempBounds[1] {
-			out.Temp = TempBounds[1]
-		}
-	}
-	if v.SpO2 != 0 {
-		if v.SpO2 < SpO2Bounds[0] {
-			out.SpO2 = SpO2Bounds[0]
-		} else if v.SpO2 > SpO2Bounds[1] {
-			out.SpO2 = SpO2Bounds[1]
-		}
-	}
-	if v.GCS != 0 {
-		if v.GCS < GCSBounds[0] {
-			out.GCS = GCSBounds[0]
-		} else if v.GCS > GCSBounds[1] {
-			out.GCS = GCSBounds[1]
-		}
-	}
-	return out
 }
 
 // VitalsValid returns true if all present vitals are within bounds.
@@ -225,11 +160,11 @@ func ResourceCount(count, maxResources int) int {
 
 // ParamsReport holds validation results for triagegeist.Params.
 type ParamsReport struct {
-	Valid       bool
-	WeightsOK   bool
+	Valid        bool
+	WeightsOK    bool
 	ThresholdsOK bool
-	MaxResOK    bool
-	ResourceWOK bool
+	MaxResOK     bool
+	ResourceWOK  bool
 }
 
 // Params validates p (weights in [0,1], T1>T2>T3>T4, MaxResources>=0, ResourceWeight>=0).

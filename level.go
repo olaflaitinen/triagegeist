@@ -9,19 +9,24 @@ package triagegeist
 // outcome of thresholding a continuous acuity score as defined in this package.
 //
 // Assignment is by thresholding the normalised acuity score s:
+//
 //   - Level 1: s >= T1
+//
 //   - Level 2: T2 <= s < T1
+//
 //   - Level 3: T3 <= s < T2
+//
 //   - Level 4: T4 <= s < T3
+//
 //   - Level 5: s < T4
 //
-//	| Level | Constant            | Typical meaning        | Wait (min) |
-//	|-------|---------------------|-------------------------|------------|
-//	| 1     | Level1Resuscitation | Immediate life-saving   | 0          |
-//	| 2     | Level2Emergent      | Emergent, high risk     | 15         |
-//	| 3     | Level3Urgent        | Urgent but stable       | 60         |
-//	| 4     | Level4LessUrgent    | Less urgent             | 120        |
-//	| 5     | Level5NonUrgent     | Non-urgent              | 240        |
+//     | Level | Constant            | Typical meaning        | Wait (min) |
+//     |-------|---------------------|-------------------------|------------|
+//     | 1     | Level1Resuscitation | Immediate life-saving   | 0          |
+//     | 2     | Level2Emergent      | Emergent, high risk     | 15         |
+//     | 3     | Level3Urgent        | Urgent but stable       | 60         |
+//     | 4     | Level4LessUrgent    | Less urgent             | 120        |
+//     | 5     | Level5NonUrgent     | Non-urgent              | 240        |
 type Level int
 
 const (
@@ -170,9 +175,9 @@ func LevelStrings() map[Level]string {
 	return map[Level]string{
 		Level1Resuscitation: "Resuscitation",
 		Level2Emergent:      "Emergent",
-		Level3Urgent:       "Urgent",
-		Level4LessUrgent:   "Less urgent",
-		Level5NonUrgent:    "Non-urgent",
+		Level3Urgent:        "Urgent",
+		Level4LessUrgent:    "Less urgent",
+		Level5NonUrgent:     "Non-urgent",
 	}
 }
 

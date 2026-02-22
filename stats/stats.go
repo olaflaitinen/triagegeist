@@ -220,7 +220,7 @@ func ComputeScoreStats(scores []float64) ScoreStats {
 
 // LevelStats holds counts and proportions for levels 1..5.
 type LevelStats struct {
-	Counts [6]int   // index 0 unused; 1..5
+	Counts [6]int // index 0 unused; 1..5
 	Total  int
 	Props  [6]float64
 }

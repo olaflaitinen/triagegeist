@@ -58,6 +58,7 @@ func TestParams_Validate(t *testing.T) {
 }
 
 var benchVitals = score.Vitals{HR: 120, RR: 24, SBP: 90, DBP: 60, SpO2: 92}
+
 const benchResources = 3
 
 func BenchmarkEngine_ScoreAndLevel(b *testing.B) {

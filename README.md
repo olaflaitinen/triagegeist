@@ -4,8 +4,10 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/olaflaitinen/triagegeist.svg)](https://pkg.go.dev/github.com/olaflaitinen/triagegeist)
 [![Go Report Card](https://goreportcard.com/badge/github.com/olaflaitinen/triagegeist)](https://goreportcard.com/report/github.com/olaflaitinen/triagegeist)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/olaflaitinen/triagegeist/ci.yml?branch=main&label=CI&logo=github)](https://github.com/olaflaitinen/triagegeist/actions)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/olaflaitinen/triagegeist?logo=go)](https://go.dev/)
 [![License: EUPL-1.2](https://img.shields.io/badge/License-EUPL--1.2-blue.svg)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/olaflaitinen/triagegeist)](https://github.com/olaflaitinen/triagegeist/releases)
 [![GitHub last commit](https://img.shields.io/github/last-commit/olaflaitinen/triagegeist)](https://github.com/olaflaitinen/triagegeist/commits/main)
 [![GitHub repo size](https://img.shields.io/github/repo-size/olaflaitinen/triagegeist)](https://github.com/olaflaitinen/triagegeist)
@@ -38,7 +40,9 @@ Deterministic · Zero-copy hot path · LaTeX-documented · EUPL-1.2
 |-------|---------|
 | Go Reference | Package documentation on pkg.go.dev |
 | Go Report Card | Code quality and lint report |
+| CI Status | GitHub Actions workflow status |
 | Go Version | Minimum Go version (1.22) from go.mod |
+
 | License EUPL-1.2 | European Union Public Licence v. 1.2 |
 | GitHub release | Latest release tag |
 | Last commit | Most recent commit on default branch |
@@ -126,7 +130,7 @@ triagegeist computes a **normalised acuity score** $s \in [0,1]$ and a **discret
 | **Metrics** | Sensitivity, specificity | Per level or binary; PPV, NPV, F1 |
 | **Metrics** | Cohen's $\kappa$, weighted $\kappa$ | Agreement vs chance; adjacent-level agreement |
 | **Metrics** | AUC, calibration error | From scores and binary outcomes |
-| **Statistics** | Descriptive | Mean $\bar{x}$, $\sigma$, $\mathrm{CI}_{95\%}$, median, percentiles |
+| **Statistics** | Descriptive | Mean $\bar{x}$, $\sigma$, $\mathrm{CI}_{95}$, median, percentiles |
 | **Statistics** | Level distribution | Counts and proportions per level |
 | **Export** | JSON, CSV | Single result or batch; level report, summary |
 | **Documentation** | LaTeX | All formulas in $ \ldots $ and $$ \ldots $$ |
@@ -359,11 +363,11 @@ flowchart TD
         R[resourceCount]
         P[Params]
     end
-    V --> Vcomp[Vital component V]
-    R --> Rcomp[Resource component R]
-    Vcomp --> raw[raw = V + R]
+    V --> Vcomp["Vital component V"]
+    R --> Rcomp["Resource component R"]
+    Vcomp --> raw["raw = V + R"]
     Rcomp --> raw
-    raw --> norm[s = raw / divisor]
+    raw --> norm["s = raw / divisor"]
     norm --> thresh{Thresholds}
     thresh --> L1[Level 1]
     thresh --> L2[Level 2]
@@ -473,7 +477,7 @@ When reference (ground truth) levels are available, use the **metrics** package.
 | Package | Use |
 |---------|-----|
 | metrics | ConfusionMatrix, Sensitivity, Specificity, PPV, NPV, F1, CohenKappa, BinaryCM, AUC, CalibrationError, WeightedKappa |
-| stats | Mean $\bar{x}$, StdDev $\sigma$, $\mathrm{CI}_{95\%}$, median, percentiles, LevelDistribution, ComputeScoreStats, ExactAgreement, WithinLevel |
+| stats | Mean $\bar{x}$, StdDev $\sigma$, $\mathrm{CI}_{95}$, median, percentiles, LevelDistribution, ComputeScoreStats, ExactAgreement, WithinLevel |
 
 ---
 
@@ -693,18 +697,18 @@ flowchart TB
         w[weights]
         n[norms]
     end
-    v --> d[Deviation d_i per vital]
+    v --> d["Deviation d_i per vital"]
     n --> d
-    d --> V[V = weighted sum / weight sum]
+    d --> V["V = weighted sum / weight sum"]
     w --> V
-    r --> R[R = alpha * min(1, r/max)]
-    V --> raw[raw = V + R]
+    r --> R["R = alpha * min(1, r/max)"]
+    V --> raw["raw = V + R"]
     R --> raw
-    raw --> div[divisor = sum w_i + alpha]
+    raw --> div["divisor = sum w_i + alpha"]
     w --> div
-    raw --> s[s = raw / divisor]
+    raw --> s["s = raw / divisor"]
     div --> s
-    s --> clamp[s in 0,1]
+    s --> clamp["s in 0,1"]
 ```
 
 ---
@@ -846,7 +850,7 @@ The same convention is used in [docs/](docs/), [CONTRIBUTING.md](CONTRIBUTING.md
 | $\{1,\ldots,5\}$ | Discrete level set |
 | $\bar{x}$ | Sample mean |
 | $\sigma$, $\sigma^2$ | Standard deviation, variance |
-| $\mathrm{CI}_{95\%}$ | 95% confidence interval |
+| $\mathrm{CI}_{95}$ | 95% confidence interval |
 | $\kappa$ | Cohen's kappa (agreement) |
 | TP, FP, FN, TN | True/False Positive/Negative counts |
 | PPV, NPV | Positive/Negative predictive value |

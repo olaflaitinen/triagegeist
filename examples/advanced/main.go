@@ -139,4 +139,3 @@ func sampleData() ([]score.Vitals, []int) {
 	resourceCounts = resourceCounts[:len(vitals)]
 	return vitals, resourceCounts
 }
-

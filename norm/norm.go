@@ -88,7 +88,7 @@ func Deviation(value, mid, halfWidth float64) float64 {
 	if halfWidth <= 0 {
 		return 0
 	}
-	d := math.Abs(value - mid) / halfWidth
+	d := math.Abs(value-mid) / halfWidth
 	if d > 1 {
 		return 1
 	}

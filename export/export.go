@@ -49,17 +49,17 @@ type Result struct {
 // FromVitalsScoreLevel builds a Result from score.Vitals, acuity, level (1..5), and label.
 func FromVitalsScoreLevel(v score.Vitals, resourceCount int, acuity float64, level int, levelLabel string) Result {
 	return Result{
-		HR:             v.HR,
-		RR:             v.RR,
-		SBP:            v.SBP,
-		DBP:            v.DBP,
-		Temp:           v.Temp,
-		SpO2:           v.SpO2,
-		GCS:            v.GCS,
-		ResourceCount:  resourceCount,
-		Acuity:         acuity,
-		Level:          level,
-		LevelLabel:     levelLabel,
+		HR:            v.HR,
+		RR:            v.RR,
+		SBP:           v.SBP,
+		DBP:           v.DBP,
+		Temp:          v.Temp,
+		SpO2:          v.SpO2,
+		GCS:           v.GCS,
+		ResourceCount: resourceCount,
+		Acuity:        acuity,
+		Level:         level,
+		LevelLabel:    levelLabel,
 	}
 }
 

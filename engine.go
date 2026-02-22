@@ -278,4 +278,3 @@ func NewLenientEngine() *Engine {
 func NewResearchEngine() *Engine {
 	return NewEngine(PresetResearch())
 }
-

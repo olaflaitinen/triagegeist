@@ -45,52 +45,31 @@ func deviation(v float64, mid, hw float64) float64 {
 	if v <= 0 && mid > 0 {
 		return 0
 	}
-	d := math.Abs(v - mid) / hw
+	d := math.Abs(v-mid) / hw
 	if d > 1 {
 		return 1
 	}
 	return d
 }
 
+func addVital(v float64, w float64, norm [2]float64, sum *float64, wSum *float64, isTemp bool) {
+	if (!isTemp && v > 0) || (isTemp && v != 0) {
+		*sum += w * deviation(v, norm[0], norm[1])
+		*wSum += w
+	}
+}
+
 // VitalComponent returns the weighted sum of vital deviations in [0, 1].
 // Uses the package-level VitalWeights; pass a custom slice if needed via AcuityRaw.
 func VitalComponent(v Vitals, weights [7]float64) float64 {
 	var sum, wSum float64
-	if v.HR > 0 {
-		d := deviation(float64(v.HR), HRNorm[0], HRNorm[1])
-		sum += weights[0] * d
-		wSum += weights[0]
-	}
-	if v.RR > 0 {
-		d := deviation(float64(v.RR), RRNorm[0], RRNorm[1])
-		sum += weights[1] * d
-		wSum += weights[1]
-	}
-	if v.SBP > 0 {
-		d := deviation(float64(v.SBP), SBPNorm[0], SBPNorm[1])
-		sum += weights[2] * d
-		wSum += weights[2]
-	}
-	if v.DBP > 0 {
-		d := deviation(float64(v.DBP), DBPNorm[0], DBPNorm[1])
-		sum += weights[3] * d
-		wSum += weights[3]
-	}
-	if v.Temp > 0 {
-		d := deviation(v.Temp, TempNorm[0], TempNorm[1])
-		sum += weights[4] * d
-		wSum += weights[4]
-	}
-	if v.SpO2 > 0 {
-		d := deviation(float64(v.SpO2), SpO2Norm[0], SpO2Norm[1])
-		sum += weights[5] * d
-		wSum += weights[5]
-	}
-	if v.GCS > 0 {
-		d := deviation(float64(v.GCS), GCSNorm[0], GCSNorm[1])
-		sum += weights[6] * d
-		wSum += weights[6]
-	}
+	addVital(float64(v.HR), weights[0], HRNorm, &sum, &wSum, false)
+	addVital(float64(v.RR), weights[1], RRNorm, &sum, &wSum, false)
+	addVital(float64(v.SBP), weights[2], SBPNorm, &sum, &wSum, false)
+	addVital(float64(v.DBP), weights[3], DBPNorm, &sum, &wSum, false)
+	addVital(v.Temp, weights[4], TempNorm, &sum, &wSum, true)
+	addVital(float64(v.SpO2), weights[5], SpO2Norm, &sum, &wSum, false)
+	addVital(float64(v.GCS), weights[6], GCSNorm, &sum, &wSum, false)
 	if wSum <= 0 {
 		return 0
 	}
@@ -191,45 +170,27 @@ func PresentCount(v Vitals) int {
 	return n
 }
 
+func addVitalNorm(v float64, w float64, norm [2]float64, sum *float64, wSum *float64, isTemp bool) {
+	if norm[1] <= 0 {
+		return
+	}
+	if (!isTemp && v > 0) || (isTemp && v != 0) {
+		*sum += w * deviation(v, norm[0], norm[1])
+		*wSum += w
+	}
+}
+
 // VitalComponentWithNorms computes the vital component using custom norms (mid, halfWidth) per vital.
 // norms[i] = [mid, halfWidth] for vital i (0..6). If norms[i][1] <= 0, that vital is skipped.
 func VitalComponentWithNorms(v Vitals, weights [7]float64, norms [7][2]float64) float64 {
 	var sum, wSum float64
-	if v.HR > 0 && norms[0][1] > 0 {
-		d := deviation(float64(v.HR), norms[0][0], norms[0][1])
-		sum += weights[0] * d
-		wSum += weights[0]
-	}
-	if v.RR > 0 && norms[1][1] > 0 {
-		d := deviation(float64(v.RR), norms[1][0], norms[1][1])
-		sum += weights[1] * d
-		wSum += weights[1]
-	}
-	if v.SBP > 0 && norms[2][1] > 0 {
-		d := deviation(float64(v.SBP), norms[2][0], norms[2][1])
-		sum += weights[2] * d
-		wSum += weights[2]
-	}
-	if v.DBP > 0 && norms[3][1] > 0 {
-		d := deviation(float64(v.DBP), norms[3][0], norms[3][1])
-		sum += weights[3] * d
-		wSum += weights[3]
-	}
-	if v.Temp != 0 && norms[4][1] > 0 {
-		d := deviation(v.Temp, norms[4][0], norms[4][1])
-		sum += weights[4] * d
-		wSum += weights[4]
-	}
-	if v.SpO2 > 0 && norms[5][1] > 0 {
-		d := deviation(float64(v.SpO2), norms[5][0], norms[5][1])
-		sum += weights[5] * d
-		wSum += weights[5]
-	}
-	if v.GCS > 0 && norms[6][1] > 0 {
-		d := deviation(float64(v.GCS), norms[6][0], norms[6][1])
-		sum += weights[6] * d
-		wSum += weights[6]
-	}
+	addVitalNorm(float64(v.HR), weights[0], norms[0], &sum, &wSum, false)
+	addVitalNorm(float64(v.RR), weights[1], norms[1], &sum, &wSum, false)
+	addVitalNorm(float64(v.SBP), weights[2], norms[2], &sum, &wSum, false)
+	addVitalNorm(float64(v.DBP), weights[3], norms[3], &sum, &wSum, false)
+	addVitalNorm(v.Temp, weights[4], norms[4], &sum, &wSum, true)
+	addVitalNorm(float64(v.SpO2), weights[5], norms[5], &sum, &wSum, false)
+	addVitalNorm(float64(v.GCS), weights[6], norms[6], &sum, &wSum, false)
 	if wSum <= 0 {
 		return 0
 	}

@@ -84,4 +84,3 @@
 // triagegeist is licensed under the European Union Public Licence v. 1.2 (EUPL-1.2).
 // Authors: Gustav Olaf Yunus Laitinen-Fredriksson Lundström-Imanov.
 package triagegeist
-

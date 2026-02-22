@@ -47,7 +47,7 @@ All notable changes to the triagegeist project are documented in this file. The 
 - **Documentation**
   - Package doc with acuity formula summary and level table.
   - Inline doc comments for all exported symbols.
-  - README and all `.md` files use LaTeX for mathematics: inline \( \ldots \) and display $$ \ldots $$ (GitHub/MathJax/KaTeX compatible).
+  - README and all `.md` files use LaTeX for mathematics: inline $ \ldots $ and display $$ \ldots $$ (GitHub/MathJax/KaTeX compatible).
   - README with mathematical model (LaTeX formulas), parameter tables, usage examples.
 - **Testing**
   - Unit tests for `Engine`, `FromScore`, `Params.Validate`, and `score` package (VitalComponent, Acuity, Normalize).
