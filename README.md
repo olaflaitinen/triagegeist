@@ -4,7 +4,6 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/olaflaitinen/triagegeist.svg)](https://pkg.go.dev/github.com/olaflaitinen/triagegeist)
 [![Go Report Card](https://goreportcard.com/badge/github.com/olaflaitinen/triagegeist)](https://goreportcard.com/report/github.com/olaflaitinen/triagegeist)
-[![CI Status](https://img.shields.io/github/actions/workflow/status/olaflaitinen/triagegeist/ci.yml?branch=main&label=CI&logo=github)](https://github.com/olaflaitinen/triagegeist/actions)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/olaflaitinen/triagegeist?logo=go)](https://go.dev/)
 [![License: EUPL-1.2](https://img.shields.io/badge/License-EUPL--1.2-blue.svg)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
 
