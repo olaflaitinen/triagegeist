@@ -95,7 +95,7 @@ Deterministic · Zero-copy hot path · LaTeX-documented · EUPL-1.2
 
 ## Overview
 
-triagegeist computes a **normalised acuity score** \( s \in [0,1] \) and a **discrete triage level** \( L \in \{1,2,3,4,5\} \) from vital signs and expected resource consumption. The implementation is fully parametric and deterministic: no external model files or heavy ML runtimes are required. The design prioritises speed, low memory use, and suitability for embedded or server-side deployment while remaining aligned with established emergency triage concepts.
+triagegeist computes a **normalised acuity score** $s \in [0,1]$ and a **discrete triage level** $L \in \{1,2,3,4,5\}$ from vital signs and expected resource consumption. The implementation is fully parametric and deterministic: no external model files or heavy ML runtimes are required. The design prioritises speed, low memory use, and suitability for embedded or server-side deployment while remaining aligned with established emergency triage concepts.
 
 | Attribute | Value |
 |-----------|-------|
@@ -112,24 +112,24 @@ triagegeist computes a **normalised acuity score** \( s \in [0,1] \) and a **dis
 
 | Category | Feature | Description |
 |----------|---------|-------------|
-| **Core** | Parametric acuity | Formula-based score \( s \in [0,1] \) from vitals and resource count |
-| **Core** | Five-level triage | Discrete level \( L \in \{1,\ldots,5\} \) via configurable thresholds \( T_1,\ldots,T_4 \) |
+| **Core** | Parametric acuity | Formula-based score $s \in [0,1]$ from vitals and resource count |
+| **Core** | Five-level triage | Discrete level $L \in \{1,\ldots,5\}$ via configurable thresholds $T_1,\ldots,T_4$ |
 | **Core** | Batch evaluation | `BatchScoreAndLevel`, `BatchAcuity`, `BatchLevel`, `BatchEvaluate` |
 | **Core** | Presets | `DefaultParams`, `PresetStrict`, `PresetLenient`, `PresetResearch` |
 | **Performance** | Pure Go | No cgo; portable and cross-compilable |
 | **Performance** | Zero allocs (hot path) | Stack-allocated structs; no heap in single evaluation |
-| **Performance** | Sub-microsecond latency | Target \( t_{\mathrm{op}} \in [100,\,1000] \) ns per evaluation |
-| **Correctness** | Deterministic | Same inputs and params always yield same \( s \) and \( L \) |
+| **Performance** | Sub-microsecond latency | Target $t_{\mathrm{op}} \in [100,\,1000]$ ns per evaluation |
+| **Correctness** | Deterministic | Same inputs and params always yield same $s$ and $L$ |
 | **Correctness** | Validated params | `Params.Validate()`, `ValidateParamsExternal` |
 | **Correctness** | Input validation | `validate.Vitals`, `validate.ClampVitals`, `validate.ResourceCount` |
-| **Metrics** | Confusion matrix | \(5\times5\) counts; TP, FP, FN, TN per class |
+| **Metrics** | Confusion matrix | $5 \times 5$ counts; TP, FP, FN, TN per class |
 | **Metrics** | Sensitivity, specificity | Per level or binary; PPV, NPV, F1 |
-| **Metrics** | Cohen's \( \kappa \), weighted \( \kappa \) | Agreement vs chance; adjacent-level agreement |
+| **Metrics** | Cohen's $\kappa$, weighted $\kappa$ | Agreement vs chance; adjacent-level agreement |
 | **Metrics** | AUC, calibration error | From scores and binary outcomes |
-| **Statistics** | Descriptive | Mean \( \bar{x} \), \( \sigma \), \( \mathrm{CI}_{95\%} \), median, percentiles |
+| **Statistics** | Descriptive | Mean $\bar{x}$, $\sigma$, $\mathrm{CI}_{95\%}$, median, percentiles |
 | **Statistics** | Level distribution | Counts and proportions per level |
 | **Export** | JSON, CSV | Single result or batch; level report, summary |
-| **Documentation** | LaTeX | All formulas in \( \ldots \) and $$ \ldots $$ |
+| **Documentation** | LaTeX | All formulas in $ \ldots $ and $$ \ldots $$ |
 | **Documentation** | Tables and schemas | README, docs, and package doc with Mermaid where applicable |
 
 ---
@@ -142,19 +142,19 @@ The raw acuity aggregate is a weighted combination of vital-sign deviation and r
 
 #### Vital component
 
-For each vital \( i \) with observed value \( x_i \), reference midpoint \( \mu_i \), and half-width \( \sigma_i \):
+For each vital $i$ with observed value $x_i$, reference midpoint $\mu_i$, and half-width $\sigma_i$:
 
 $$
 d_i = \min\left(1,\; \frac{|x_i - \mu_i|}{\sigma_i}\right)
 $$
 
-Only **present** vitals (e.g. \( x_i \neq 0 \) where 0 denotes missing) are included. The vital component \( V \) is:
+Only **present** vitals (e.g. $x_i \neq 0$ where 0 denotes missing) are included. The vital component $V$ is:
 
 $$
 V = \frac{\sum_{i \in \mathcal{I}} w_i \, d_i}{\sum_{i \in \mathcal{I}} w_i}
 $$
 
-where \( \mathcal{I} \) is the set of indices with present values and \( w_i \geq 0 \) are configurable weights.
+where $\mathcal{I}$ is the set of indices with present values and $w_i \geq 0$ are configurable weights.
 
 #### Resource component
 
@@ -162,7 +162,7 @@ $$
 R = \alpha \cdot \min\left(1,\; \frac{\texttt{resourceCount}}{\texttt{maxResources}}\right)
 $$
 
-with \( \alpha \) = `resourceWeight` and `maxResources` the cap on expected resources.
+with $\alpha = \text{resourceWeight}$ and $\texttt{maxResources}$ the cap on expected resources.
 
 #### Normalised score
 
@@ -172,7 +172,7 @@ s = \frac{\text{raw}}{\sum_i w_i + \alpha},\qquad
 s \in [0,1]
 $$
 
-Implementations clamp \( s \) to \( [0,1] \) when necessary.
+Implementations clamp $s$ to $[0,1]$ when necessary.
 
 ---
 
@@ -180,31 +180,31 @@ Implementations clamp \( s \) to \( [0,1] \) when necessary.
 
 | Symbol | Meaning | Typical range / unit |
 |--------|---------|----------------------|
-| \( s \) | Normalised acuity score | \( [0,1] \) |
-| \( L \) | Discrete triage level | \( \{1,2,3,4,5\} \) |
-| \( x_i \) | Observed value of vital \( i \) | Vital-specific (bpm, /min, mmHg, °C, %, 3–15) |
-| \( \mu_i \) | Reference midpoint for vital \( i \) | Vital-specific |
-| \( \sigma_i \) | Half-width for vital \( i \) | Vital-specific |
-| \( d_i \) | Deviation \( \min(1, |x_i-\mu_i|/\sigma_i) \) | \( [0,1] \) |
-| \( w_i \) | Weight for vital \( i \) | \( [0,1] \) |
-| \( \alpha \) | Resource weight | \( \geq 0 \) |
-| \( V \) | Vital component | \( [0,1] \) |
-| \( R \) | Resource component | \( [0,1] \) |
-| \( T_1, T_2, T_3, T_4 \) | Score thresholds for level assignment | \( 0 < T_4 < T_3 < T_2 < T_1 \leq 1 \) |
-| \( \mathcal{I} \) | Set of indices with present vitals | Subset of \( \{0,\ldots,6\} \) |
+| $s$ | Normalised acuity score | $[0,1]$ |
+| $L$ | Discrete triage level | $\{1,2,3,4,5\}$ |
+| $x_i$ | Observed value of vital $i$ | Vital-specific (bpm, /min, mmHg, °C, %, 3–15) |
+| $\mu_i$ | Reference midpoint for vital $i$ | Vital-specific |
+| $\sigma_i$ | Half-width for vital $i$ | Vital-specific |
+| $d_i$ | Deviation $\min(1, |x_i-\mu_i|/\sigma_i)$ | $[0,1]$ |
+| $w_i$ | Weight for vital $i$ | $[0,1]$ |
+| $\alpha$ | Resource weight | $\alpha \geq 0$ |
+| $V$ | Vital component | $[0,1]$ |
+| $R$ | Resource component | $[0,1]$ |
+| $T_1, T_2, T_3, T_4$ | Score thresholds for level assignment | $0 < T_4 < T_3 < T_2 < T_1 \leq 1$ |
+| $\mathcal{I}$ | Set of indices with present vitals | Subset of $\{0,\ldots,6\}$ |
 
 | Formula | Expression |
 |---------|------------|
-| Deviation | \( d_i = \min(1, |x_i - \mu_i| / \sigma_i) \) |
-| Vital component | \( V = \bigl(\sum_{i \in \mathcal{I}} w_i d_i\bigr) / \bigl(\sum_{i \in \mathcal{I}} w_i\bigr) \) |
-| Resource component | \( R = \alpha \cdot \min(1, \texttt{resourceCount}/\texttt{maxResources}) \) |
-| Raw score | \( \text{raw} = V + R \) |
-| Normalised score | \( s = \text{raw} / (\sum_i w_i + \alpha) \) |
-| Level 1 | \( s \geq T_1 \) |
-| Level 2 | \( T_2 \leq s < T_1 \) |
-| Level 3 | \( T_3 \leq s < T_2 \) |
-| Level 4 | \( T_4 \leq s < T_3 \) |
-| Level 5 | \( s < T_4 \) |
+| Deviation | $d_i = \min(1, \lvert x_i - \mu_i \rvert / \sigma_i)$ |
+| Vital component | $V = \bigl(\sum_{i \in \mathcal{I}} w_i d_i\bigr) / \bigl(\sum_{i \in \mathcal{I}} w_i\bigr)$ |
+| Resource component | $R = \alpha \cdot \min(1, \texttt{resourceCount}/\texttt{maxResources})$ |
+| Raw score | $\text{raw} = V + R$ |
+| Normalised score | $s = \text{raw} / (\sum_i w_i + \alpha)$ |
+| Level 1 | $s \geq T_1$ |
+| Level 2 | $T_2 \leq s < T_1$ |
+| Level 3 | $T_3 \leq s < T_2$ |
+| Level 4 | $T_4 \leq s < T_3$ |
+| Level 5 | $s < T_4$ |
 
 ---
 
@@ -282,7 +282,7 @@ func main() {
 | `Params.Validate`, `ValidateParamsExternal` | triagegeist, validate | Parameter validation |
 | `NewEngine(p)`, `eng.Acuity`, `eng.Level`, `eng.ScoreAndLevel` | triagegeist | Single evaluation |
 | `eng.BatchScoreAndLevel`, `eng.BatchAcuity`, `eng.BatchLevel`, `eng.BatchEvaluate` | triagegeist | Batch evaluation |
-| `FromScore(s, p)` | triagegeist | Map \( s \) to \( L \) |
+| `FromScore(s, p)` | triagegeist | Map $s$ to $L$ |
 | `Level.String`, `Level.WaitTimeMinutes`, `Level.IsHighAcuity` | triagegeist | Level helpers |
 | `score.Vitals`, `score.Acuity`, `score.VitalComponent`, `score.ResourceComponent` | score | Formula and vitals |
 | `norm.DefaultRanges`, `norm.Deviation`, `norm.Ranges` | norm | Reference ranges |
@@ -397,23 +397,23 @@ flowchart TD
 
 | Symbol / name | Meaning | Default value |
 |---------------|---------|---------------|
-| \( w_{\mathrm{HR}} \) | Heart rate weight | 0.18 |
-| \( w_{\mathrm{RR}} \) | Respiratory rate weight | 0.22 |
-| \( w_{\mathrm{SBP}} \) | Systolic BP weight | 0.16 |
-| \( w_{\mathrm{DBP}} \) | Diastolic BP weight | 0.10 |
-| \( w_{\mathrm{Temp}} \) | Temperature weight | 0.08 |
-| \( w_{\mathrm{SpO2}} \) | Oxygen saturation weight | 0.16 |
-| \( w_{\mathrm{GCS}} \) | Glasgow Coma Scale weight | 0.10 |
-| \( \alpha \) | Resource weight | 0.25 |
+| $w_{\mathrm{HR}}$ | Heart rate weight | 0.18 |
+| $w_{\mathrm{RR}}$ | Respiratory rate weight | 0.22 |
+| $w_{\mathrm{SBP}}$ | Systolic BP weight | 0.16 |
+| $w_{\mathrm{DBP}}$ | Diastolic BP weight | 0.10 |
+| $w_{\mathrm{Temp}}$ | Temperature weight | 0.08 |
+| $w_{\mathrm{SpO2}}$ | Oxygen saturation weight | 0.16 |
+| $w_{\mathrm{GCS}}$ | Glasgow Coma Scale weight | 0.10 |
+| $\alpha$ | Resource weight | 0.25 |
 | maxResources | Cap on resource count | 6 |
-| \( T_1 \) | Threshold level 1 | 0.85 |
-| \( T_2 \) | Threshold level 2 | 0.60 |
-| \( T_3 \) | Threshold level 3 | 0.35 |
-| \( T_4 \) | Threshold level 4 | 0.15 |
+| $T_1$ | Threshold level 1 | 0.85 |
+| $T_2$ | Threshold level 2 | 0.60 |
+| $T_3$ | Threshold level 3 | 0.35 |
+| $T_4$ | Threshold level 4 | 0.15 |
 
-### Reference ranges (mid \( \mu \), half-width \( \sigma \))
+### Reference ranges (mid $\mu$, half-width $\sigma$)
 
-| Vital | \( \mu \) | \( \sigma \) | Unit |
+| Vital | $\mu$ | $\sigma$ | Unit |
 |-------|-----------|--------------|------|
 | HR | 80 | 40 | bpm |
 | RR | 16 | 10 | /min |
@@ -425,7 +425,7 @@ flowchart TD
 
 ### Presets
 
-| Preset | \( T_1 \) | \( T_2 \) | \( T_3 \) | \( T_4 \) | Use case |
+| Preset | $T_1$ | $T_2$ | $T_3$ | $T_4$ | Use case |
 |--------|-----------|-----------|-----------|-----------|----------|
 | Default | 0.85 | 0.60 | 0.35 | 0.15 | General ED |
 | Strict | 0.80 | 0.55 | 0.30 | 0.12 | Minimise under-triage |
@@ -436,13 +436,13 @@ flowchart TD
 
 ## Levels and wait times
 
-| Level \( L \) | Label | Condition | Typical wait (guidance) |
+| Level $L$ | Label | Condition | Typical wait (guidance) |
 |---------------|-------|-----------|--------------------------|
-| 1 | Resuscitation | \( s \geq T_1 \) | Immediate |
-| 2 | Emergent | \( T_2 \leq s < T_1 \) | &lt; 15 min |
-| 3 | Urgent | \( T_3 \leq s < T_2 \) | &lt; 60 min |
-| 4 | Less urgent | \( T_4 \leq s < T_3 \) | &lt; 120 min |
-| 5 | Non-urgent | \( s < T_4 \) | &lt; 240 min |
+| 1 | Resuscitation | $s \geq T_1$ | Immediate |
+| 2 | Emergent | $T_2 \leq s < T_1$ | &lt; 15 min |
+| 3 | Urgent | $T_3 \leq s < T_2$ | &lt; 60 min |
+| 4 | Less urgent | $T_4 \leq s < T_3$ | &lt; 120 min |
+| 5 | Non-urgent | $s < T_4$ | &lt; 240 min |
 
 | Level | Wait time (minutes) | High acuity? | Low acuity? |
 |-------|---------------------|--------------|-------------|
@@ -460,20 +460,20 @@ When reference (ground truth) levels are available, use the **metrics** package.
 
 | Metric | Formula / definition |
 |--------|----------------------|
-| Sensitivity (per class) | \( \mathrm{Sens} = \mathrm{TP}/(\mathrm{TP}+\mathrm{FN}) \) |
-| Specificity (per class) | \( \mathrm{Spec} = \mathrm{TN}/(\mathrm{TN}+\mathrm{FP}) \) |
-| PPV | \( \mathrm{PPV} = \mathrm{TP}/(\mathrm{TP}+\mathrm{FP}) \) |
-| NPV | \( \mathrm{NPV} = \mathrm{TN}/(\mathrm{TN}+\mathrm{FN}) \) |
-| F1 | \( \mathrm{F1} = 2\,\mathrm{PPV}\,\mathrm{Sens}/(\mathrm{PPV}+\mathrm{Sens}) \) |
-| Cohen's \( \kappa \) | \( \kappa = (p_o - p_e)/(1 - p_e) \) |
+| Sensitivity (per class) | $\mathrm{Sens} = \mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$ |
+| Specificity (per class) | $\mathrm{Spec} = \mathrm{TN}/(\mathrm{TN}+\mathrm{FP})$ |
+| PPV | $\mathrm{PPV} = \mathrm{TP}/(\mathrm{TP}+\mathrm{FP})$ |
+| NPV | $\mathrm{NPV} = \mathrm{TN}/(\mathrm{TN}+\mathrm{FN})$ |
+| F1 | $\mathrm{F1} = 2\,\mathrm{PPV}\,\mathrm{Sens}/(\mathrm{PPV}+\mathrm{Sens})$ |
+| Cohen's $\kappa$ | $\kappa = (p_o - p_e)/(1 - p_e)$ |
 | Weighted kappa | Linear weights on level distance |
 | AUC | Trapezoidal rule on ROC curve |
-| Calibration error | Mean \( \lvert \mathrm{score} - \mathrm{outcome} \rvert \) |
+| Calibration error | Mean $\lvert \mathrm{score} - \mathrm{outcome} \rvert$ |
 
 | Package | Use |
 |---------|-----|
 | metrics | ConfusionMatrix, Sensitivity, Specificity, PPV, NPV, F1, CohenKappa, BinaryCM, AUC, CalibrationError, WeightedKappa |
-| stats | Mean \( \bar{x} \), StdDev \( \sigma \), \( \mathrm{CI}_{95\%} \), median, percentiles, LevelDistribution, ComputeScoreStats, ExactAgreement, WithinLevel |
+| stats | Mean $\bar{x}$, StdDev $\sigma$, $\mathrm{CI}_{95\%}$, median, percentiles, LevelDistribution, ComputeScoreStats, ExactAgreement, WithinLevel |
 
 ---
 
@@ -488,7 +488,7 @@ When reference (ground truth) levels are available, use the **metrics** package.
 | `export.FromVitalsScoreLevel(...)` | export | Build Result for JSON/CSV |
 | `export.WriteCSV(w, results)` | export | Write batch CSV |
 | `export.LevelReport(results)` | export | Per-level counts and mean acuity |
-| `export.ComputeSummary(results)` | export | N, mean acuity, min, max, level distribution |
+| `export.ComputeSummary(results)` | export | \( N \), mean acuity, min, max, level distribution |
 
 ---
 
@@ -526,9 +526,9 @@ go test -bench=. -benchmem ./...
 
 | Metric | Symbol | Target |
 |--------|--------|--------|
-| Latency | \( t_{\mathrm{op}} \) | Hundreds of ns per evaluation |
-| Allocations | \( n_{\mathrm{alloc}} \) | 0 in hot path |
-| Throughput | \( 10^9/t_{\mathrm{op}} \) | Millions of evals/s per core (theory) |
+| Latency | $t_{\mathrm{op}}$ | Hundreds of ns per evaluation |
+| Allocations | $n_{\mathrm{alloc}}$ | 0 in hot path |
+| Throughput | $10^9/t_{\mathrm{op}}$ | Millions of evals/s per core (theory) |
 
 See [docs/BENCHMARKS.md](docs/BENCHMARKS.md) for full details.
 
@@ -617,7 +617,7 @@ This library is for **research and decision support only**. It is not a substitu
 
 ## Vital index reference
 
-| Index \( i \) | Vital | Field (score.Vitals) | Unit | Default \( \mu_i \) | Default \( \sigma_i \) |
+| Index $i$ | Vital | Field (score.Vitals) | Unit | Default $\mu_i$ | Default $\sigma_i$ |
 |---------------|--------|----------------------|------|---------------------|------------------------|
 | 0 | HR | HR | bpm | 80 | 40 |
 | 1 | RR | RR | /min | 16 | 10 |
@@ -627,7 +627,7 @@ This library is for **research and decision support only**. It is not a substitu
 | 5 | SpO2 | SpO2 | % | 98 | 8 |
 | 6 | GCS | GCS | 3–15 | 15 | 6 |
 
-Missing vitals: use 0 for integer fields or 0.0 for Temp; they are excluded from \( \mathcal{I} \).
+Missing vitals: use 0 for integer fields or 0.0 for Temp; they are excluded from $\mathcal{I}$.
 
 ---
 
@@ -805,11 +805,11 @@ $$
 
 | Condition | Level |
 |-----------|-------|
-| \( s \geq T_1 \) | 1 (Resuscitation) |
-| \( T_2 \leq s < T_1 \) | 2 (Emergent) |
-| \( T_3 \leq s < T_2 \) | 3 (Urgent) |
-| \( T_4 \leq s < T_3 \) | 4 (Less urgent) |
-| \( s < T_4 \) | 5 (Non-urgent) |
+| $s \geq T_1$ | 1 (Resuscitation) |
+| $T_2 \leq s < T_1$ | 2 (Emergent) |
+| $T_3 \leq s < T_2$ | 3 (Urgent) |
+| $T_4 \leq s < T_3$ | 4 (Less urgent) |
+| $s < T_4$ | 5 (Non-urgent) |
 
 ### Metrics (binary)
 
@@ -829,7 +829,7 @@ $$
 
 All Markdown documentation uses LaTeX for mathematics:
 
-- **Inline:** \( \ldots \) e.g. \( s \in [0,1] \), \( \alpha \), \( T_1 \).
+- **Inline:** $ \ldots $ e.g. $s \in [0,1]$, $\alpha$, $T_1$.
 - **Display:** $$ \ldots $$ for block equations.
 
 The same convention is used in [docs/](docs/), [CONTRIBUTING.md](CONTRIBUTING.md), and package doc comments.
@@ -840,14 +840,14 @@ The same convention is used in [docs/](docs/), [CONTRIBUTING.md](CONTRIBUTING.md
 
 | Convention | Meaning |
 |------------|---------|
-| \( \mathcal{I} \) | Set of vital indices with present (non-missing) values |
-| \( \mathbb{R}_{\geq 0} \) | Non-negative reals |
-| \( [a,b] \) | Closed interval; \( s \in [0,1] \) |
-| \( \{1,\ldots,5\} \) | Discrete level set |
-| \( \bar{x} \) | Sample mean |
-| \( \sigma \), \( \sigma^2 \) | Standard deviation, variance |
-| \( \mathrm{CI}_{95\%} \) | 95% confidence interval |
-| \( \kappa \) | Cohen's kappa (agreement) |
+| $\mathcal{I}$ | Set of vital indices with present (non-missing) values |
+| $\mathbb{R}_{\geq 0}$ | Non-negative reals |
+| $[a,b]$ | Closed interval; $s \in [0,1]$ |
+| $\{1,\ldots,5\}$ | Discrete level set |
+| $\bar{x}$ | Sample mean |
+| $\sigma$, $\sigma^2$ | Standard deviation, variance |
+| $\mathrm{CI}_{95\%}$ | 95% confidence interval |
+| $\kappa$ | Cohen's kappa (agreement) |
 | TP, FP, FN, TN | True/False Positive/Negative counts |
 | PPV, NPV | Positive/Negative predictive value |
 | bpm | Beats per minute (HR) |
@@ -857,27 +857,27 @@ The same convention is used in [docs/](docs/), [CONTRIBUTING.md](CONTRIBUTING.md
 | % | Percentage (SpO2) |
 | GCS | Glasgow Coma Scale (3–15) |
 
-All angles in formulas are in radians where applicable. Weights \( w_i \) and \( \alpha \) are non-negative; missing vitals are excluded from sums.
+All angles in formulas are in radians where applicable. Weights $w_i$ and $\alpha$ are non-negative; missing vitals are excluded from sums.
 
 ---
 
 ## Extended formula derivations
 
-### Why \( d_i = \min(1, |x_i - \mu_i|/\sigma_i) \)
+### Why $d_i = \min(1, |x_i - \mu_i|/\sigma_i)$
 
-Deviation is capped at 1 so that a single extreme vital does not dominate: \( d_i \in [0,1] \). The ratio \( |x_i - \mu_i|/\sigma_i \) is a normalised distance; \( \sigma_i \) acts as a scale (half-width). Beyond one “sigma” from \( \mu_i \), we treat the vital as maximally deviant (1).
+Deviation is capped at 1 so that a single extreme vital does not dominate: $d_i \in [0,1]$. The ratio $|x_i - \mu_i|/\sigma_i$ is a normalised distance; $\sigma_i$ acts as a scale (half-width). Beyond one “sigma” from $\mu_i$, we treat the vital as maximally deviant (1).
 
-### Why \( s = \text{raw} / (\sum_i w_i + \alpha) \)
+### Why $s = \text{raw} / (\sum_i w_i + \alpha)$
 
-The denominator equals the maximum possible raw value when every \( d_i = 1 \) and resources are at cap: \( V_{\max} = \sum_i w_i \), \( R_{\max} = \alpha \), so \( \text{raw}_{\max} = \sum_i w_i + \alpha \). Dividing by this keeps \( s \in [0,1] \).
+The denominator equals the maximum possible raw value when every $d_i = 1$ and resources are at cap: $V_{\max} = \sum_i w_i$, $R_{\max} = \alpha$, so $\text{raw}_{\max} = \sum_i w_i + \alpha$. Dividing by this keeps $s \in [0,1]$.
 
 ### Level thresholds
 
-\( T_1 > T_2 > T_3 > T_4 \). Higher score \( s \) means higher acuity; so \( s \geq T_1 \) gives the most urgent level (1). Defaults (e.g. 0.85, 0.65, 0.45, 0.25) are tunable per site.
+$T_1 > T_2 > T_3 > T_4$. Higher score $s$ means higher acuity; so $s \geq T_1$ gives the most urgent level (1). Defaults (e.g. 0.85, 0.65, 0.45, 0.25) are tunable per site.
 
 ### Cohen's kappa
 
-\( p_o \) = observed proportion of agreement, \( p_e \) = expected agreement by chance. \( \kappa = (p_o - p_e)/(1 - p_e) \in [-1,1] \); 0 = chance, 1 = perfect agreement.
+$p_o$ = observed proportion of agreement, $p_e$ = expected agreement by chance. $\kappa = (p_o - p_e)/(1 - p_e) \in [-1,1]$; 0 = chance, 1 = perfect agreement.
 
 ---
 
@@ -968,16 +968,16 @@ for L := 1; L <= 5; L++ { fmt.Printf("L%d: %d\n", L, dist[L]) }
 |------|------------|
 | Acuity | Severity of condition; higher acuity = more urgent. |
 | Triage | Prioritisation of patients by urgency. |
-| Level | Discrete triage level 1–5 (1 = most urgent). |
-| Score | Continuous normalised value \( s \in [0,1] \). |
+| Level | Discrete triage level $1$–$5$ ($1$ = most urgent). |
+| Score | Continuous normalised value $s \in [0,1]$. |
 | Vital signs | HR, RR, SBP, DBP, Temp, SpO2, GCS. |
 | Resource count | Number of expected resources (beds, procedures, etc.). |
-| Threshold | Cut-off \( T_k \) used to assign level from score. |
+| Threshold | Cut-off $T_k$ used to assign level from score. |
 | Preset | Predefined Params (Default, Strict, Lenient, Research). |
 | Confusion matrix | Contingency table of predicted vs reference classes. |
 | Cohen's kappa | Agreement coefficient correcting for chance. |
-| Sensitivity | TP/(TP+FN); recall for positive class. |
-| Specificity | TN/(TN+FP). |
+| Sensitivity | \( \mathrm{TP}/(\mathrm{TP}+\mathrm{FN}) \); recall for positive class. |
+| Specificity | \( \mathrm{TN}/(\mathrm{TN}+\mathrm{FP}) \). |
 | PPV | Positive predictive value; precision. |
 | NPV | Negative predictive value. |
 | F1 | Harmonic mean of precision and recall. |
