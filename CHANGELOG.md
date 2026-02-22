@@ -32,7 +32,7 @@ All notable changes to the triagegeist project are documented in this file. The 
 
 ---
 
-## [1.0.0] (initial release)
+## [0.1.0] (initial release)
 
 ### Added
 
@@ -69,10 +69,10 @@ All notable changes to the triagegeist project are documented in this file. The 
 
 | Version | Date       | Notes |
 |---------|------------|-------|
-| 1.0.0   | (TBD)      | Initial public release |
+| 0.1.0   | 2026-02-22 | Initial public release |
 | Unreleased | (ongoing) | Development branch |
 
 ---
 
-[Unreleased]: https://github.com/olaflaitinen/triagegeist/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/olaflaitinen/triagegeist/releases/tag/v1.0.0
+[Unreleased]: https://github.com/olaflaitinen/triagegeist/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/olaflaitinen/triagegeist/releases/tag/v0.1.0
