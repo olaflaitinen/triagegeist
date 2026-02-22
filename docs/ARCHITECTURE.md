@@ -97,17 +97,26 @@ triagegeist/
    - Root package offers `ValidateParamsExternal(p)` which delegates to `validate.Params` with a ParamsLike struct.
 
 3. **Vital component**
-   - For each present vital (e.g. HR > 0), compute deviation \( d_i = \min(1, |x_i - \mu_i| / \sigma_i) \) using either score package default norms or custom norms via `score.VitalComponentWithNorms`.
+   - For each present vital (e.g. \( \mathrm{HR} > 0 \)), compute deviation
+     $$
+     d_i = \min\left(1,\ \frac{|x_i - \mu_i|}{\sigma_i}\right)
+     $$
+     using either score package default norms or custom norms via `score.VitalComponentWithNorms`.
    - Weighted sum over present vitals, normalised by the sum of weights of present vitals, yields \( V \in [0,1] \).
 
 4. **Resource component**
-   - \( R = \alpha \cdot \min(1, \texttt{resourceCount} / \texttt{maxResources}) \).
+   $$
+   R = \alpha \cdot \min\left(1,\ \frac{\texttt{resourceCount}}{\texttt{maxResources}}\right).
+   $$
 
 5. **Raw and normalised score**
-   - \( \text{raw} = V + R \), \( s = \text{raw} / (\sum_i w_i + \alpha) \), then \( s \) is clamped to \( [0,1] \).
+   $$
+   \text{raw} = V + R,\qquad s = \frac{\text{raw}}{\sum_i w_i + \alpha},\qquad s \in [0,1].
+   $$
+   Implementations clamp \( s \) to \( [0,1] \) when necessary.
 
 6. **Level**
-   - Compare \( s \) to thresholds \( T_1 > T_2 > T_3 > T_4 \): Level 1 if \( s \geq T_1 \), Level 2 if \( T_2 \leq s < T_1 \), etc., Level 5 if \( s < T_4 \).
+   - Compare \( s \) to thresholds \( T_1 > T_2 > T_3 > T_4 \): Level \( 1 \) if \( s \geq T_1 \), Level \( 2 \) if \( T_2 \leq s < T_1 \), Level \( 3 \) if \( T_3 \leq s < T_2 \), Level \( 4 \) if \( T_4 \leq s < T_3 \), Level \( 5 \) if \( s < T_4 \).
 
 7. **Output**
    - `Engine.Acuity` returns \( s \); `Engine.Level` returns \( L \); `Engine.ScoreAndLevel` returns both. Batch methods (`BatchScoreAndLevel`, `BatchEvaluate`) repeat this for slices.

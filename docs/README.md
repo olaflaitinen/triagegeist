@@ -29,7 +29,15 @@ Across the docs and the codebase we use consistent notation:
 | \( V, R \) | Vital component and resource component before normalisation. |
 | \( d_i \) | Deviation for vital \( i \): \( \min(1, |x_i - \mu_i| / \sigma_i) \). |
 
-Formulas are given in LaTeX-style form; GitHub and many viewers render \( \) and \[ \] or $$ for inline and display math.
+**LaTeX support:** All mathematical content in the documentation uses LaTeX so that it renders correctly on GitHub and in viewers that support MathJax or KaTeX.
+
+- **Inline math:** \( \ldots \) e.g. \( s \in [0,1] \), \( L \in \{1,2,3,4,5\} \).
+- **Display math:** $$ \ldots $$ for block equations, e.g.
+  $$
+  d_i = \min\left(1,\ \frac{|x_i - \mu_i|}{\sigma_i}\right).
+  $$
+
+If your viewer does not render math, the raw LaTeX will still be readable (e.g. `\( s \in [0,1] \)`).
 
 ---
 

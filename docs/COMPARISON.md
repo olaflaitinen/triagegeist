@@ -54,7 +54,7 @@ triagegeist aims to be the **reference Go library** for parametric ED triage and
 | **Basis** | Parametric formula (weights + norms + thresholds) | Proprietary algorithms; flowcharts and decision trees |
 | **Implementation** | Open source (EUPL-1.2), full formula in code | Often proprietary or licence-restricted; not fully replicable in code |
 | **Calibration** | All parameters configurable; defaults are generic | Tied to specific system; may require licence to use officially |
-| **Output** | Continuous score \( s \in [0,1] \) plus discrete level 1–5 | Typically discrete level only |
+| **Output** | Continuous score \( s \in [0,1] \) plus discrete level \( L \in \{1,2,3,4,5\} \) | Typically discrete level only |
 
 triagegeist does **not** implement ESI or MTS verbatim (which would require their licence and exact logic). It provides a **parametric, auditable alternative** that can be calibrated toward similar behaviour where legally and clinically appropriate.
 

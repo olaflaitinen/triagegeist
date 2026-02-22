@@ -54,9 +54,15 @@ All use fixed inputs (e.g. `benchVitals`, `benchResources`). No I/O, no network,
 
 ## Interpreting results
 
-- **ns/op**: Nanoseconds per operation. Lower is better. Depends on CPU and Go version.
-- **B/op**: Bytes allocated per operation. Zero or very low is desired for hot paths.
-- **allocs/op**: Number of heap allocations per operation. Zero is ideal for inner loops.
+Metrics reported by `go test -benchmem`:
+
+| Metric | Meaning | LaTeX / formula |
+|--------|---------|------------------|
+| **ns/op** | Nanoseconds per operation; lower is better | \( t_{\mathrm{op}} \) in ns |
+| **B/op** | Bytes allocated per operation; zero or low desired | \( B_{\mathrm{alloc}} \) in bytes |
+| **allocs/op** | Heap allocations per operation; zero ideal | \( n_{\mathrm{alloc}} \) count |
+
+Throughput (evaluations per second) is \( 10^9 / t_{\mathrm{op}} \) when \( t_{\mathrm{op}} \) is in nanoseconds.
 
 Example output (format may vary by Go version):
 
@@ -72,9 +78,9 @@ The `-8` suffix indicates GOMAXPROCS=8. If you see non-zero allocs/op in the mai
 
 ## Expected order of magnitude
 
-- **Latency**: Single evaluation (acuity + level) should be on the order of **hundreds of nanoseconds** per call on modern hardware (single goroutine). Exact numbers depend on CPU, Go version, and inlining.
-- **Allocations**: The design aims for **0 allocs/op** in the hot path when Vitals and Params are stack-allocated and not escaped. If allocs appear, they should be documented (e.g. future optional features or interface calls).
-- **Throughput**: With 0 allocs and sub-microsecond latency, theoretical throughput is in the **millions of evaluations per second** per core. Real pipelines will add cost for I/O, validation, logging, and serialisation.
+- **Latency:** Single evaluation (acuity + level) should satisfy \( t_{\mathrm{op}} \in [100,\, 1000] \) ns on modern hardware (single goroutine). Exact \( t_{\mathrm{op}} \) depends on CPU, Go version, and inlining.
+- **Allocations:** The design aims for \( n_{\mathrm{alloc}} = 0 \) in the hot path when Vitals and Params are stack-allocated and not escaped. If \( n_{\mathrm{alloc}} > 0 \), it should be documented (e.g. optional features or interface calls).
+- **Throughput:** With \( n_{\mathrm{alloc}} = 0 \) and \( t_{\mathrm{op}} < 10^3 \) ns, theoretical throughput is \( \approx 10^6 \) to \( 10^7 \) evaluations per second per core. Real pipelines add cost for I/O, validation, logging, and serialisation.
 
 ---
 

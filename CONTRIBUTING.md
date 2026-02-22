@@ -117,14 +117,17 @@ go test ./...
 
 ### Mathematical notation (in comments and docs)
 
-When referring to formulas in code or package docs, use consistent notation:
+All documentation supports LaTeX for mathematics. Use consistent notation:
 
-| Concept | Notation example |
-|---------|-------------------|
-| Normalised score | \( s \in [0,1] \) |
-| Level | \( L \in \{1,\ldots,5\} \) |
-| Weights | \( w_i \), \( \alpha \) |
-| Thresholds | \( T_1, T_2, T_3, T_4 \) |
+| Concept | Inline LaTeX | Display (block) |
+|---------|----------------|------------------|
+| Normalised score | \( s \in [0,1] \) | $$ s \in [0,1] $$ |
+| Level | \( L \in \{1,\ldots,5\} \) | $$ L \in \{1,2,3,4,5\} $$ |
+| Weights | \( w_i \), \( \alpha \) | $$ \sum_i w_i + \alpha $$ |
+| Thresholds | \( T_1 > T_2 > T_3 > T_4 \) | $$ T_1 = 0.85,\ T_2 = 0.60,\ T_3 = 0.35,\ T_4 = 0.15 $$ |
+| Deviation | \( d_i = \min(1, |x_i - \mu_i|/\sigma_i) \) | Use $$ \ldots $$ for multi-line formulas |
+
+Inline: `\( ... \)`. Display: `$$ ... $$`. GitHub and most Markdown renderers support these.
 
 ---
 

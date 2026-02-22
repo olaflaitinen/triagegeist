@@ -15,8 +15,8 @@ The project logo is used in the root [README](../README.md) and, if needed, in d
 | Filename | **logo.svg** (preferred) or **triagegeist-logo.svg** |
 | Format | SVG (scalable vector graphics) |
 | Background | None (transparent). The SVG should not include an opaque background so that it displays correctly on light and dark themes. |
-| Canvas size | **8000 x 2000 px** (4:1 aspect ratio). This is the design canvas; the logo can be scaled down for display. |
-| README display | The root README embeds the logo with `width="320"`, so the displayed size is 320 px wide (height scales to 80 px for 4:1). This keeps the page readable. |
+| Canvas size | **8000 \(\times\) 2000 px** (\(4:1\) aspect ratio). This is the design canvas; the logo can be scaled down for display. |
+| README display | The root README embeds the logo with `width="320"`, so the displayed size is 320 px wide (height scales to \(320/4 = 80\) px for \(4:1\)). This keeps the page readable. |
 
 ### Instructions
 

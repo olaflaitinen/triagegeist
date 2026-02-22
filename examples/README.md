@@ -45,14 +45,14 @@ go run .
 **Expected output (summary):**
 
 - **basic**: Prints acuity (e.g. 0.7465), level (e.g. 2 Emergent), and wait time (e.g. 15 min). No CSV or file output.
-- **advanced**: Prints acuity statistics (N, mean, std, 95% CI, min, max, percentiles), level distribution (counts and percentages per level 1–5), agreement metrics (overall accuracy, Cohen's kappa, macro sensitivity/specificity), binary metrics (sensitivity, specificity, PPV, NPV, F1), weighted kappa, exact and within-one-level agreement, export summary (N, mean acuity, min, max, level counts), level report (per-level counts and mean acuity), and then a CSV table of all results to stdout.
+- **advanced**: Prints acuity statistics (\(N\), mean \( \bar{x} \), std \( \sigma \), \(95\%\ \mathrm{CI}\), min, max, percentiles), level distribution (counts and percentages per level \( L \in \{1,\ldots,5\} \)), agreement metrics (overall accuracy, Cohen's \( \kappa \), macro sensitivity/specificity), binary metrics (sensitivity, specificity, PPV, NPV, F1), weighted kappa, exact and within-one-level agreement, export summary, level report, and then a CSV table of all results to stdout.
 
 ---
 
 ## Learning path
 
 1. **basic**: Run one evaluation with default params. Note how vitals and resource count are passed, how validation is used (Vitals report, ClampVitals, ResourceCount), and how the result is passed to export.FromVitalsScoreLevel. This is the minimal integration pattern.
-2. **advanced**: Run batch evaluations with synthetic data. See how to use Engine.BatchScoreAndLevel, stats.ComputeScoreStats, stats.ComputeLevelStats, metrics.NewConfusionMatrix, metrics.NewBinaryCM, metrics.WeightedKappa, stats.ExactAgreement, stats.WithinLevel, export.LevelReport, export.ComputeSummary, and export.WriteCSV. This mirrors a research or audit workflow.
+2. **advanced**: Run batch evaluations with synthetic data. See how to use Engine.BatchScoreAndLevel, stats (e.g. \( \bar{x} \), \( \mathrm{CI}_{95\%} \), level distribution), metrics (confusion matrix, \( \kappa \), sensitivity/specificity), export.LevelReport, export.ComputeSummary, and export.WriteCSV. This mirrors a research or audit workflow.
 
 ---
 
