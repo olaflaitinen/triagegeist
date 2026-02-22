@@ -6,29 +6,17 @@ All notable changes to the triagegeist project are documented in this file. The 
 
 ## [Unreleased]
 
-### Added
+- (Placeholder for future changes.)
 
-- (Placeholder for future changes. Move items here when they are merged but not yet released.)
+---
 
-### Changed
-
-- (None.)
-
-### Deprecated
-
-- (None.)
-
-### Removed
-
-- (None.)
+## [1.0.0] - 2026-02-22
 
 ### Fixed
 
-- (None.)
-
-### Security
-
-- (None.)
+- **Code Quality**: Addressed all `gofmt` and `gocyclo` (>15) issues reported by Go Report Card across `metrics`, `validate`, and `score` packages.
+- **Documentation**: Fixed Mermaid diagram syntax in `README.md` to render correctly on GitHub.
+- **Documentation**: Corrected LaTeX notation for 95% Confidence Interval to `\mathrm{CI}_{95}`.
 
 ---
 
@@ -69,10 +57,12 @@ All notable changes to the triagegeist project are documented in this file. The 
 
 | Version | Date       | Notes |
 |---------|------------|-------|
+| 1.0.0   | 2026-02-22 | Code quality fixes and stable release |
 | 0.1.0   | 2026-02-22 | Initial public release |
 | Unreleased | (ongoing) | Development branch |
 
 ---
 
-[Unreleased]: https://github.com/olaflaitinen/triagegeist/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/olaflaitinen/triagegeist/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/olaflaitinen/triagegeist/releases/tag/v1.0.0
 [0.1.0]: https://github.com/olaflaitinen/triagegeist/releases/tag/v0.1.0
